@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zoönomic Annual Plan — Mediamatic 2026</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="site-title">Zoönomic Annual Plan</div>
+    <div class="header-right">
+      <div class="site-meta">
+        Zoöp · Mediamatic · Amsterdam<br>
+        <span id="clockDisplay">--:--</span> · <span id="weatherDisplay">☁ --°C</span>
+      </div>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🐀 rat mode</button>
+    </div>
+  </header>
+
+  <!-- BROWSE VIEW -->
+  <div id="browseView">
+    <div class="goals-grid" id="goalsGrid"></div>
+  </div>
+
+  <!-- BIG GHOST TITLE (behind everything) -->
+  <div id="hoverTitle"></div>
+
+  <!-- DETAIL VIEW -->
+  <div id="detailView">
+    <div class="detail-header">
+      <div class="detail-header-label">Zoönomic Annual Plan · 2026</div>
+      <button class="close-btn" onclick="closeDetail()">← all goals</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-left">
+        <div class="detail-big-icon" id="detailIcon"></div>
+        <div class="detail-goal-label" id="detailGoalLabel"></div>
+      </div>
+      <div class="goals-strip" id="goalsStrip"></div>
+      <div class="detail-right">
+        <div class="detail-info-top">
+          <div class="detail-goal-num" id="detailGoalNum"></div>
+          <div class="detail-title" id="detailTitle"></div>
+          <div class="detail-desc" id="detailDesc"></div>
+        </div>
+        <div id="ivStack"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERVENTION DRAWER -->
+  <div class="stat-drawer" id="drawer">
+    <div class="drawer-handle" onclick="closeDrawer()"></div>
+    <div class="drawer-eyebrow" id="dEyebrow"></div>
+    <div class="drawer-title" id="dTitle"></div>
+    <div class="drawer-period" id="dPeriod"></div>
+    <div class="drawer-body" id="dBody"></div>
+    <div class="drawer-ind-head">indicators</div>
+    <div id="dIndicators"></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
