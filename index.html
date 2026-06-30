@@ -12,7 +12,7 @@
   <div id="introOverlay">
     <div class="intro-inner">
       <div class="intro-eyebrow">Zoöp · Mediamatic · Amsterdam · 2026</div>
-      <h1 class="intro-title">Zoönomic<br>Annual Plan</h1>
+      <h1 class="intro-title">Zoöp<br>Seasonal Report</h1>
       <p class="intro-body">
         This is a living report of Mediamatic's commitment to the more-than-human world.
         Five goals. Eleven interventions. One biotope shared with species that were here long before us.
@@ -27,7 +27,7 @@
   </div>
 
   <header class="site-header">
-    <div class="site-title">Zoönomic Annual Plan</div>
+    <div class="site-title">Zoöp Seasonal Report</div>
     <div class="header-right">
       <div class="site-meta">
         Zoöp · Mediamatic · Amsterdam<br>
@@ -36,9 +36,205 @@
     </div>
   </header>
 
+  <!-- DESKTOP FOLDERS (behind goals grid) -->
+  <div id="desktopFolders">
+    <div class="desktop-folder" data-window="annualReport" draggable="false">
+      <div class="folder-icon"></div>
+      <div class="folder-label">Annual Report</div>
+    </div>
+    <div class="desktop-folder" data-window="wildlifeCams" draggable="false">
+      <div class="folder-icon"></div>
+      <div class="folder-label">Wildlife Cameras</div>
+    </div>
+    <div class="desktop-folder" data-window="logbook" draggable="false">
+      <div class="folder-icon"></div>
+      <div class="folder-label">Logbook</div>
+    </div>
+  </div>
+
   <!-- BROWSE VIEW -->
   <div id="browseView">
     <div class="goals-grid" id="goalsGrid"></div>
+  </div>
+
+  <!-- DESKTOP WINDOWS -->
+
+  <!-- Annual Report Window -->
+  <div class="desk-window" id="win-annualReport">
+    <div class="desk-window-titlebar" data-win="win-annualReport">
+      <div class="win-dots">
+        <span class="win-dot win-dot--close" onclick="closeDeskWindow('annualReport')"></span>
+        <span class="win-dot win-dot--min"></span>
+        <span class="win-dot win-dot--max"></span>
+      </div>
+      <span class="desk-window-title">Zoöp Annual Report</span>
+      <div class="win-dots-spacer"></div>
+    </div>
+    <div class="desk-window-body">
+      <div class="report-section">
+        <div class="report-eyebrow">Zoöp · Mediamatic · Amsterdam · 2026</div>
+        <h2 class="report-heading">Annual Report</h2>
+        <p class="report-text">This living document tracks Mediamatic's ongoing commitment to the more-than-human world across five goals and eleven interventions throughout 2026.</p>
+      </div>
+      <div class="report-section">
+        <h3 class="report-subhead">Goals Overview</h3>
+        <div id="reportGoalsList"></div>
+      </div>
+      <div class="report-section">
+        <h3 class="report-subhead">Key Figures</h3>
+        <div class="report-stats">
+          <div class="report-stat"><span class="report-stat-num">5</span><span class="report-stat-label">Goals</span></div>
+          <div class="report-stat"><span class="report-stat-num">11</span><span class="report-stat-label">Interventions</span></div>
+          <div class="report-stat"><span class="report-stat-num">6</span><span class="report-stat-label">Partners</span></div>
+          <div class="report-stat"><span class="report-stat-num">4</span><span class="report-stat-label">Wildlife Cams</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wildlife Cameras Window -->
+  <div class="desk-window" id="win-wildlifeCams">
+    <div class="desk-window-titlebar" data-win="win-wildlifeCams">
+      <div class="win-dots">
+        <span class="win-dot win-dot--close" onclick="closeDeskWindow('wildlifeCams')"></span>
+        <span class="win-dot win-dot--min"></span>
+        <span class="win-dot win-dot--max"></span>
+      </div>
+      <span class="desk-window-title">Wildlife Cameras</span>
+      <div class="win-dots-spacer"></div>
+    </div>
+    <div class="desk-window-body desk-window-body--video">
+      <div class="video-placeholder" id="videoEmbed">
+        <p class="video-hint">Loading playlist…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logbook Window -->
+  <div class="desk-window desk-window--logbook" id="win-logbook">
+    <div class="desk-window-titlebar" data-win="win-logbook">
+      <div class="win-dots">
+        <span class="win-dot win-dot--close" onclick="closeDeskWindow('logbook')"></span>
+        <span class="win-dot win-dot--min"></span>
+        <span class="win-dot win-dot--max"></span>
+      </div>
+      <span class="desk-window-title" id="logbookWindowTitle">Logbook — Wildlife Observations</span>
+      <div class="win-dots-spacer"></div>
+    </div>
+
+    <!-- FEED VIEW -->
+    <div class="logbook-layout" id="logbookFeedView">
+      <div class="logbook-timeline" id="logbookTimeline">
+        <div class="timeline-header">Timeline</div>
+        <div class="timeline-list" id="timelineList"></div>
+      </div>
+      <div class="logbook-feed">
+        <div class="logbook-feed-topbar">
+          <input type="text" class="logbook-search" id="logbookSearch" placeholder="search entries…" oninput="filterLogbook()">
+        </div>
+        <div class="logbook-feed-scroll" id="logbookEntries"></div>
+        <div class="logbook-new-btn" onclick="showLogbookCreate()">
+          <span class="new-btn-label">+ new entry</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATE VIEW -->
+    <div class="logbook-create" id="logbookCreateView" style="display:none">
+      <div class="logbook-create-back" onclick="showLogbookFeed()">← back to feed</div>
+      <div class="logbook-create-scroll">
+        <!-- Media type selector -->
+        <div class="media-type-tabs">
+          <button class="media-tab active" data-type="image" onclick="switchMediaTab('image')">photo</button>
+          <button class="media-tab" data-type="audio" onclick="switchMediaTab('audio')">sound</button>
+          <button class="media-tab" data-type="video" onclick="switchMediaTab('video')">video</button>
+          <button class="media-tab" data-type="drawing" onclick="switchMediaTab('drawing')">draw</button>
+        </div>
+
+        <!-- Image upload -->
+        <div class="media-panel active" id="panel-image">
+          <label class="media-dropzone" id="imageDropzone">
+            <input type="file" id="logPhoto" accept="image/*" style="display:none">
+            <span class="dropzone-text">click or drag to upload image</span>
+          </label>
+          <div class="media-preview" id="imagePreview"></div>
+        </div>
+
+        <!-- Audio record/upload -->
+        <div class="media-panel" id="panel-audio">
+          <div class="audio-controls">
+            <button class="audio-rec-btn" id="audioRecBtn" onclick="toggleAudioRec()">record</button>
+            <span class="audio-rec-status" id="audioRecStatus"></span>
+          </div>
+          <div class="audio-or">— or —</div>
+          <label class="media-dropzone media-dropzone--small">
+            <input type="file" id="logAudio" accept="audio/*" style="display:none">
+            <span class="dropzone-text">upload audio file</span>
+          </label>
+          <div class="media-preview" id="audioPreview"></div>
+        </div>
+
+        <!-- Video upload -->
+        <div class="media-panel" id="panel-video">
+          <label class="media-dropzone">
+            <input type="file" id="logVideo" accept="video/*" style="display:none">
+            <span class="dropzone-text">upload video file</span>
+          </label>
+          <div class="media-preview" id="videoPreview"></div>
+        </div>
+
+        <!-- Drawing canvas -->
+        <div class="media-panel" id="panel-drawing">
+          <div class="draw-toolbar">
+            <div class="draw-colors" id="drawColors"></div>
+            <div class="draw-sizes">
+              <button class="draw-size active" data-size="3" onclick="setDrawSize(3,this)">S</button>
+              <button class="draw-size" data-size="8" onclick="setDrawSize(8,this)">M</button>
+              <button class="draw-size" data-size="16" onclick="setDrawSize(16,this)">L</button>
+            </div>
+            <button class="draw-tool-btn" id="eraserBtn" onclick="toggleEraser()">eraser</button>
+            <button class="draw-tool-btn" onclick="clearCanvas()">clear</button>
+            <button class="draw-tool-btn" onclick="undoCanvas()">undo</button>
+          </div>
+          <canvas id="drawCanvas" width="480" height="300"></canvas>
+        </div>
+
+        <!-- Metadata fields -->
+        <form id="logbookForm" class="logbook-form">
+          <div class="logbook-field-row">
+            <div class="logbook-field">
+              <label>Date</label>
+              <input type="date" id="logDate" required>
+            </div>
+            <div class="logbook-field">
+              <label>Time</label>
+              <input type="time" id="logTime" required>
+            </div>
+            <div class="logbook-field">
+              <label>Weather</label>
+              <select id="logWeather">
+                <option value="sunny">sunny</option>
+                <option value="partly cloudy">partly cloudy</option>
+                <option value="overcast" selected>overcast</option>
+                <option value="rainy">rainy</option>
+                <option value="stormy">stormy</option>
+                <option value="foggy">foggy</option>
+                <option value="snowy">snowy</option>
+              </select>
+            </div>
+          </div>
+          <div class="logbook-field">
+            <label>Animals Seen</label>
+            <input type="text" id="logAnimals" placeholder="e.g. heron, rat, coot, dragonfly…" required>
+          </div>
+          <div class="logbook-field">
+            <label>Notes</label>
+            <textarea id="logText" rows="2" placeholder="Describe what you observed…"></textarea>
+          </div>
+          <button type="submit" class="logbook-submit">Submit Entry</button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <!-- THEME SWITCHER ANIMAL — bottom corner -->
@@ -50,7 +246,7 @@
   <!-- DETAIL VIEW -->
   <div id="detailView">
     <div class="detail-header">
-      <div class="detail-header-label">Zoönomic Annual Plan · 2026</div>
+      <div class="detail-header-label">Zoöp Seasonal Report · 2026</div>
       <button class="close-btn" onclick="closeDetail()">← all goals</button>
     </div>
     <div class="detail-body">
@@ -59,6 +255,8 @@
         <div class="detail-goal-label" id="detailGoalLabel"></div>
       </div>
       <div class="goals-strip" id="goalsStrip"></div>
+
+      <!-- detail-right is position:relative so the drawer anchors to it -->
       <div class="detail-right">
         <div class="detail-info-top">
           <div class="detail-goal-num" id="detailGoalNum"></div>
@@ -66,19 +264,23 @@
           <div class="detail-desc" id="detailDesc"></div>
         </div>
         <div id="ivStack"></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- INTERVENTION DRAWER -->
-  <div class="stat-drawer" id="drawer">
-    <div class="drawer-handle" onclick="closeDrawer()"></div>
-    <div class="drawer-eyebrow" id="dEyebrow"></div>
-    <div class="drawer-title" id="dTitle"></div>
-    <div class="drawer-period" id="dPeriod"></div>
-    <div class="drawer-body" id="dBody"></div>
-    <div class="drawer-ind-head">indicators</div>
-    <div id="dIndicators"></div>
+        <!-- OVERLAY — dismisses drawer when clicking outside it -->
+        <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+        <!-- DRAWER — inside detail-right, slides up within this column only -->
+        <div class="stat-drawer" id="drawer">
+          <div class="drawer-handle" onclick="closeDrawer()"></div>
+          <div class="drawer-eyebrow" id="dEyebrow"></div>
+          <div class="drawer-title" id="dTitle"></div>
+          <div class="drawer-period" id="dPeriod"></div>
+          <div class="drawer-body" id="dBody"></div>
+          <div class="drawer-ind-head">indicators</div>
+          <div id="dIndicators"></div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <script src="data.js"></script>
