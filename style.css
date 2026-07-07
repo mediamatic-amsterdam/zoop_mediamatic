@@ -13,7 +13,7 @@
 /* ── BASE ── */
 
 body {
-  background: linear-gradient(rgba(204,194,169,0.87), rgba(23,21,26,0.586)), url('assets/icons/birdbackground.jpg') center/cover fixed no-repeat;
+  background: linear-gradient(rgba(204,194,169,0.87), rgba(23,21,26,0.586)), url('assets/icons/birdbackground1.jpg') center/cover fixed no-repeat;
   color: #402C0F;
   font-family: Georgia, serif;
   min-height: 100vh;
