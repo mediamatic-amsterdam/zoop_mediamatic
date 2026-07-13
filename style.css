@@ -227,7 +227,7 @@ body.rat .intro-enter:hover {
   height: 26vw;
   cursor: inherit;
   z-index: 10;
-  opacity: 0.35;
+  opacity: 0.1;
   transition: opacity 0.3s, transform 0.3s;
   user-select: none;
   pointer-events: all;
@@ -320,7 +320,7 @@ body::before {
   text-align: center;
   font-size: clamp(2.65rem, 7.42vw, 6.89rem);
   font-style: italic;
-  color: rgba(122,82,37,0.08);
+  color: rgba(122, 82, 37, 0.853);
   pointer-events: none;
   z-index: 1;
   opacity: 0;
