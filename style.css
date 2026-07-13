@@ -324,7 +324,7 @@ body::before {
   pointer-events: none;
   z-index: 1;
   opacity: 0;
-  transition: opacity 0.18s;
+  transition: opacity 0.8s;
   padding: 0 1.5rem;
   line-height: 1.1;
   word-break: break-word;
