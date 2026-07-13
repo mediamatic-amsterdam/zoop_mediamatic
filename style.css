@@ -573,7 +573,7 @@ body::before {
 /* ── INTERVENTION ROWS ── */
 
 #ivStack {
-  background: #C7A04A;
+  background: #ddcaa2c3;
 }
 
 .iv-row {
@@ -582,13 +582,13 @@ body::before {
   height: 52px;
   padding: 0 2rem;
   gap: 1.25rem;
-  border-bottom: 1px solid rgba(64,44,15,0.15);
+  border-bottom: 1px solid rgba(97, 63, 13, 0.612);
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s;
 }
 .iv-row:hover {
-  background: rgba(0,0,0,0.06);
+  background: rgba(226, 180, 100, 0.6);
 }
 
 .iv-name {
@@ -706,7 +706,7 @@ body.rat .drawer-overlay.open {
 .drawer-body {
   font-size: 14px;
   line-height: 1.75;
-  color: rgba(210, 195, 172, 0.966);
+  color: rgba(39, 26, 6, 0.966);
   max-width: 600px;
   margin-bottom: 1rem;
 }
@@ -725,7 +725,7 @@ body.rat .drawer-overlay.open {
   gap: 10px;
   font-size: 13px;
   font-style: italic;
-  color: rgba(64,44,15,0.42);
+  color: rgb(64, 44, 15);
   line-height: 1.55;
   margin-bottom: 0.4rem;
 }
@@ -888,7 +888,7 @@ body.rat .ind-dot { background: rgba(183,163,198,0.6); }
 .folder-icon {
   width: 76px;
   height: 66px;
-  background: url('assets/icons/birdmodefolder.svg') center/contain no-repeat;
+  background: url('assets/icons/ratmodefolder.svg') center/contain no-repeat;
   position: relative;
   opacity: 0.9;
   transition: opacity 0.2s, transform 0.2s;
@@ -897,7 +897,7 @@ body.rat .ind-dot { background: rgba(183,163,198,0.6); }
 }
 
 body.rat .folder-icon {
-  background-image: url('assets/icons/ratmodefolder.svg');
+  background-image: url('assets/icons/birdmodefolder.svg');
 }
 
 .desktop-folder:hover .folder-icon {
