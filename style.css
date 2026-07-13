@@ -454,16 +454,17 @@ body::before {
   font-family: Georgia, serif;
   font-size: 13px;
   font-style: italic;
-  background: none;
+  background: rgb(224, 155, 51);
   border: 1px solid rgba(122,82,37,0.18);
-  color: rgb(224, 155, 51);
+  color: rgb(255, 247, 234);
   padding: 4px 13px;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s;
 }
 .close-btn:hover {
-  color: rgba(224, 155, 51, 0.355);
+  background:rgba(122, 82, 37, 0.16);
+  color: rgb(255, 247, 234);
   border-color: rgb(63, 36, 5);
 }
 
@@ -520,7 +521,7 @@ body::before {
   background:#de9a3475;
   opacity: 0.5;
   transition: opacity 0.2s, background 0.2s;
-  border-bottom: 1px solid rgba(122,82,37,0.06);
+  border-bottom: 1px solid rgba(122,82,37,0.8);
   border-left: 2px solid transparent;
 }
 .strip-item:hover { opacity: 0.65; }
@@ -684,14 +685,14 @@ body.rat .drawer-overlay.open {
 .drawer-eyebrow {
   font-size: 12px;
   font-style: italic;
-  color: rgba(122,82,37,0.6);
+  color: #fffaf5;
   margin-bottom: 0.3rem;
 }
 
 .drawer-title {
   font-size: 1.27rem;
   font-style: italic;
-  color: #C7A04A;
+  color: #402c0f;
   line-height: 1.25;
   margin-bottom: 0.2rem;
 }
@@ -699,7 +700,7 @@ body.rat .drawer-overlay.open {
 .drawer-period {
   font-size: 12px;
   font-style: italic;
-  color: rgba(122,82,37,0.4);
+  color: rgba(122, 82, 37, 0.94);
   margin-bottom: 0.9rem;
 }
 
@@ -714,7 +715,7 @@ body.rat .drawer-overlay.open {
 .drawer-ind-head {
   font-size: 12px;
   font-style: italic;
-  color: rgb(222, 206, 187);
+  color: rgb(187, 106, 10);
   border-top: 1px solid rgba(122,82,37,0.1);
   padding-top: 0.75rem;
   margin-bottom: 0.55rem;
@@ -791,10 +792,12 @@ body.rat .detail-header-label { color: rgba(178,174,156,0.45); }
 
 body.rat .close-btn {
   border-color: rgb(183, 163, 198);
-  color: rgb(196, 134, 244);
+  background: rgb(225, 176, 255);
+  color: rgb(249, 241, 255);
 }
 body.rat .close-btn:hover {
-  color: rgba(183, 163, 198, 0.352);
+  background: rgba(225, 176, 255, 0.283);
+  color: rgb(249, 241, 255);
   border-color: rgba(183,163,198,0.4);
 }
 
