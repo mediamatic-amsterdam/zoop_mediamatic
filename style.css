@@ -175,7 +175,7 @@ body.rat .intro-ripple {
 
 .intro-body--small {
   font-size: 14px;
-  color: rgba(64,44,15,0.3);
+  color: rgba(64,44,15,0.5);
 }
 
 .intro-enter {
@@ -227,7 +227,7 @@ body.rat .intro-enter:hover {
   height: 26vw;
   cursor: inherit;
   z-index: 10;
-  opacity: 0.1;
+  opacity: 0.5;
   transition: opacity 0.3s, transform 0.3s;
   user-select: none;
   pointer-events: all;
