@@ -744,7 +744,7 @@ body.rat::before {
   background-image: radial-gradient(circle, rgba(166,192,206,0.1) 1px, transparent 1px);
 }
 
-body.rat #themeAnimal { opacity: 0.35; }
+body.rat #themeAnimal { opacity: 0.85; }
 
 body.rat .site-header {
   background: rgba(23,21,26,0.88);
