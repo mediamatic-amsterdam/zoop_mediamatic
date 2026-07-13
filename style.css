@@ -456,15 +456,15 @@ body::before {
   font-style: italic;
   background: none;
   border: 1px solid rgba(122,82,37,0.18);
-  color: rgba(64,44,15,0.4);
+  color: rgb(224, 155, 51);
   padding: 4px 13px;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s;
 }
 .close-btn:hover {
-  color: rgba(1, 60, 9, 0.85);
-  border-color: rgba(0,0,0,0.4);
+  color: rgba(224, 155, 51, 0.355);
+  border-color: rgb(63, 36, 5);
 }
 
 .detail-body {
@@ -790,11 +790,11 @@ body.rat .detail-header {
 body.rat .detail-header-label { color: rgba(178,174,156,0.45); }
 
 body.rat .close-btn {
-  border-color: rgba(178,174,156,0.2);
-  color: rgba(224,234,238,0.38);
+  border-color: rgb(183, 163, 198);
+  color: rgb(196, 134, 244);
 }
 body.rat .close-btn:hover {
-  color: rgba(183,163,198,0.85);
+  color: rgba(183, 163, 198, 0.352);
   border-color: rgba(183,163,198,0.4);
 }
 
