@@ -517,6 +517,7 @@ body::before {
   justify-content: center;
   font-size: 1.43rem;
   cursor: pointer;
+  background:#de9a3475;
   opacity: 0.5;
   transition: opacity 0.2s, background 0.2s;
   border-bottom: 1px solid rgba(122,82,37,0.06);
@@ -690,7 +691,7 @@ body.rat .drawer-overlay.open {
 .drawer-title {
   font-size: 1.27rem;
   font-style: italic;
-  color: #402C0F;
+  color: #C7A04A;
   line-height: 1.25;
   margin-bottom: 0.2rem;
 }
@@ -705,7 +706,7 @@ body.rat .drawer-overlay.open {
 .drawer-body {
   font-size: 14px;
   line-height: 1.75;
-  color: rgba(64,44,15,0.48);
+  color: rgba(210, 195, 172, 0.966);
   max-width: 600px;
   margin-bottom: 1rem;
 }
@@ -713,7 +714,7 @@ body.rat .drawer-overlay.open {
 .drawer-ind-head {
   font-size: 12px;
   font-style: italic;
-  color: rgba(122,82,37,0.35);
+  color: rgb(222, 206, 187);
   border-top: 1px solid rgba(122,82,37,0.1);
   padding-top: 0.75rem;
   margin-bottom: 0.55rem;
@@ -803,6 +804,7 @@ body.rat .detail-goal-label { color: rgba(166,192,206,0.55); }
 body.rat .goals-strip { border-color: rgba(166,192,206,0.08); }
 body.rat .strip-item {
   border-color: rgba(166,192,206,0.05);
+  background:#e3c9f281;
   opacity: 0.5;
 }
 body.rat .strip-item:hover { opacity: 0.65; }
@@ -816,7 +818,7 @@ body.rat .detail-info-top {
   background: #0B0A0D;
   border-color: rgba(255,255,255,0.08);
 }
-body.rat .detail-goal-num { color: rgba(166,192,206,0.55); }
+body.rat .detail-goal-num { color: rgba(166, 192, 206, 0.932); }
 body.rat .detail-title { color: #E0EAEE; }
 body.rat .detail-desc { color: rgba(224,234,238,0.38); }
 
@@ -836,7 +838,7 @@ body.rat .stat-drawer {
 }
 body.rat .drawer-handle { background: rgba(178,174,156,0.2); }
 body.rat .drawer-eyebrow { color: rgba(166,192,206,0.55); }
-body.rat .drawer-title { color: #E0EAEE; }
+body.rat .drawer-title { color: #E3C9F2; }
 body.rat .drawer-period { color: rgba(178,174,156,0.45); }
 body.rat .drawer-body { color: rgba(224,234,238,0.45); }
 body.rat .drawer-ind-head {
