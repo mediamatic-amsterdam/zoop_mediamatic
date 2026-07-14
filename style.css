@@ -463,7 +463,7 @@ body::before {
   transition: all 0.2s;
 }
 .close-btn:hover {
-  background:none;
+  background: none;
   color: rgb(255, 247, 234);
   border-color: rgb(63, 36, 5);
 }
