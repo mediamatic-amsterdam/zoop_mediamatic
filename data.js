@@ -1,12 +1,13 @@
 // ─────────────────────────────────────────
 // ZOÖNOMIC ANNUAL PLAN — data.js
-// Edit this file to update goals, interventions,
-// progress values, and indicator text.
-// Progress is a placeholder (0–100) until a
-// scoring system is defined.
+// Live content (goals, interventions, progress values, intro text) is now
+// edited through admin.html and stored in Supabase — see admin-setup.sql.
+// This file is the offline fallback the site falls back to if Supabase is
+// unreachable or not configured, and the starting content for the "Import
+// current content" button in admin.html.
 // ─────────────────────────────────────────
 
-const goals = [
+const defaultGoals = [
   {
     number: "01",
     // Replace emoji with a path to an SVG in assets/icons/ when ready:

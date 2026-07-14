@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zoöp Site Admin</title>
+  <link rel="stylesheet" href="admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-config.js"></script>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="loginScreen">
+    <h1>Zoöp Site Admin</h1>
+    <p class="hint">Log in to edit the intro text, goals, and interventions.</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="loginEmail" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="loginPassword" autocomplete="current-password">
+    </div>
+    <button id="loginBtn" style="width:100%">Log in</button>
+    <div class="status-msg" id="loginStatus"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="adminScreen" class="hidden">
+    <div class="admin-header">
+      <h1>Zoöp Site Admin</h1>
+      <div class="admin-header-actions">
+        <button class="secondary" id="importBtn">Import starting content</button>
+        <button class="secondary" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Introduction page</h2>
+      <div class="field">
+        <label>Hero wordmark (first screen, big text)</label>
+        <input type="text" id="f_hero_wordmark">
+      </div>
+      <div class="field">
+        <label>Hero hint (small text under wordmark)</label>
+        <input type="text" id="f_hero_hint">
+      </div>
+      <div class="field">
+        <label>Eyebrow (small line above the title)</label>
+        <input type="text" id="f_intro_eyebrow">
+      </div>
+      <div class="field">
+        <label>Title (put each line on its own line, shown as 2 lines)</label>
+        <textarea id="f_intro_title" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label>Main intro paragraph</label>
+        <textarea id="f_intro_body" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label>Smaller intro paragraph</label>
+        <textarea id="f_intro_body_small" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label>Enter button text</label>
+        <input type="text" id="f_intro_enter_label">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="goal-block-head">
+        <h2>Goals &amp; interventions</h2>
+        <button class="secondary" id="addGoalBtn">+ Add goal</button>
+      </div>
+      <p class="hint">Icons for goals aren't editable here — a developer adds those in code. New goals show a plain "•" until then.</p>
+      <div id="goalsContainer"></div>
+    </div>
+
+    <div class="save-bar">
+      <button id="saveAllBtn">Save all changes</button>
+      <span class="status-msg" id="saveStatus"></span>
+    </div>
+  </div>
+
+  <!-- Templates -->
+  <template id="goalTemplate">
+    <div class="goal-block">
+      <div class="goal-block-head">
+        <strong class="goal-number-label"></strong>
+        <button class="danger small remove-goal-btn">Remove goal</button>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Number (controls order, e.g. 01)</label>
+          <input type="text" class="g-number">
+        </div>
+        <div class="field">
+          <label>Short name (used in nav strip)</label>
+          <input type="text" class="g-short-name">
+        </div>
+      </div>
+      <div class="field">
+        <label>Name</label>
+        <input type="text" class="g-name">
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea class="g-desc" rows="2"></textarea>
+      </div>
+      <div class="interventions-list"></div>
+      <button class="secondary small add-iv-btn">+ Add intervention</button>
+    </div>
+  </template>
+
+  <template id="ivTemplate">
+    <div class="iv-block">
+      <div class="iv-block-head">
+        <strong>Intervention</strong>
+        <div>
+          <button class="secondary small move-up-btn" title="move up">↑</button>
+          <button class="secondary small move-down-btn" title="move down">↓</button>
+          <button class="danger small remove-iv-btn">Remove</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Name</label>
+        <input type="text" class="iv-name">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Progress (0–100)</label>
+          <input type="number" class="iv-progress" min="0" max="100">
+        </div>
+        <div class="field">
+          <label>Period</label>
+          <input type="text" class="iv-period">
+        </div>
+      </div>
+      <div class="field">
+        <label>Body text</label>
+        <textarea class="iv-body" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label>Indicators</label>
+        <div class="indicators-list"></div>
+        <button class="secondary small add-indicator-btn">+ Add indicator</button>
+      </div>
+    </div>
+  </template>
+
+  <script src="data.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

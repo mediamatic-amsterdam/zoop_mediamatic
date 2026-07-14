@@ -5,6 +5,25 @@
 let isBird = true;
 let activeIdx = 0;
 
+// ── CONTENT (Supabase-backed, admin.html edits it) ──
+// `goals` starts as the offline fallback from data.js and gets replaced by
+// live Supabase content in init(), if available. Goal icons are intentionally
+// not admin-editable — they stay a code/git change. Add an entry here when a
+// new goal is created in admin; until then it falls back to GOAL_ICON_FALLBACK.
+const GOAL_ICONS = {
+  "01": "🌿",
+  "02": "♻️",
+  "03": "📡",
+  "04": "🤝",
+  "05": "📢"
+};
+const GOAL_ICON_FALLBACK = "•";
+function getGoalIcon(number) {
+  return GOAL_ICONS[number] || GOAL_ICON_FALLBACK;
+}
+
+let goals = defaultGoals;
+
 // ── THEME ──
 
 function toggleTheme() {
@@ -91,6 +110,70 @@ async function fetchWeather() {
   } catch {
     // silently fail — placeholder stays
   }
+}
+
+// ── LOAD CONTENT FROM SUPABASE (falls back to data.js / hardcoded HTML) ──
+
+async function loadSiteContent() {
+  if (!supabaseClient) return;
+  const { data, error } = await supabaseClient.from('site_content').select('*');
+  if (error || !data) {
+    if (error) console.error('Failed to load site content', error);
+    return;
+  }
+  const content = {};
+  data.forEach(row => { content[row.key] = row.value; });
+  applySiteContent(content);
+}
+
+function applySiteContent(content) {
+  const setText = (id, value) => {
+    if (value == null) return;
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+  setText('heroWordmark', content.hero_wordmark);
+  setText('heroHint', content.hero_hint);
+  setText('introEyebrow', content.intro_eyebrow);
+  setText('introBody', content.intro_body);
+  setText('introBodySmall', content.intro_body_small);
+  setText('introEnterBtn', content.intro_enter_label);
+
+  if (content.intro_title != null) {
+    const el = document.getElementById('introTitle');
+    if (el) el.innerHTML = escapeHtml(content.intro_title).replace(/\n/g, '<br>');
+  }
+}
+
+async function loadGoalsFromSupabase() {
+  if (!supabaseClient) return null;
+
+  const [{ data: goalRows, error: goalErr }, { data: ivRows, error: ivErr }] = await Promise.all([
+    supabaseClient.from('goals').select('*').order('number', { ascending: true }),
+    supabaseClient.from('interventions').select('*').order('sort_order', { ascending: true })
+  ]);
+
+  if (goalErr) console.error('Failed to load goals', goalErr);
+  if (ivErr) console.error('Failed to load interventions', ivErr);
+  if (goalErr || ivErr || !goalRows || !goalRows.length) return null;
+
+  return goalRows.map(g => ({
+    number: g.number,
+    icon: getGoalIcon(g.number),
+    name: g.name,
+    shortName: g.short_name,
+    desc: g.description,
+    interventions: (ivRows || [])
+      .filter(iv => iv.goal_id === g.id)
+      .map(iv => ({
+        id: iv.id,
+        name: iv.name,
+        progress: iv.progress,
+        period: iv.period,
+        body: iv.body,
+        indicators: iv.indicators || []
+      }))
+  }));
 }
 
 // ── BROWSE VIEW ──
@@ -917,7 +1000,16 @@ document.getElementById('logbookForm').addEventListener('submit', async function
 
 // ── INIT ──
 
-renderBrowse();
-updateClock();
-setInterval(updateClock, 10000);
-fetchWeather();
+async function init() {
+  if (supabaseClient) {
+    await loadSiteContent();
+    const remoteGoals = await loadGoalsFromSupabase();
+    if (remoteGoals) goals = remoteGoals;
+  }
+  renderBrowse();
+  updateClock();
+  setInterval(updateClock, 10000);
+  fetchWeather();
+}
+
+init();
