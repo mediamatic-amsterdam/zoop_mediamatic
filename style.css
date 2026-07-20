@@ -848,7 +848,7 @@ body.rat .drawer-ind-head {
   color: #E3C9F2;
   border-color: rgba(178,174,156,0.1);
 }
-body.rat .drawer-ind { color: rgba(224,234,238,0.4); }
+body.rat .drawer-ind { color: rgb(224, 234, 238); }
 body.rat .ind-dot { background: rgba(183,163,198,0.6); }
 
 /* ─────────────────────────────────────────
