@@ -20,7 +20,6 @@ const DEFAULT_SITE_CONTENT = {
   intro_eyebrow: 'Zoöp · Mediamatic · Amsterdam · 2026',
   intro_title: 'Zoöp\nSeasonal Report',
   intro_body: "This is a living report of Mediamatic's commitment to the more-than-human world. Five goals. Eleven interventions. One biotope shared with species that were here long before us.",
-  intro_body_small: "Explore the goals below. Each intervention is a thread in an ongoing negotiation between human activity and ecological care — measured not in profit, but in worms, water quality, and the slow return of species we had forgotten to notice.",
   intro_enter_label: 'enter the biotope →'
 };
 
@@ -119,7 +118,6 @@ function renderContentForm() {
   document.getElementById('f_intro_eyebrow').value = state.content.intro_eyebrow || '';
   document.getElementById('f_intro_title').value = state.content.intro_title || '';
   document.getElementById('f_intro_body').value = state.content.intro_body || '';
-  document.getElementById('f_intro_body_small').value = state.content.intro_body_small || '';
   document.getElementById('f_intro_enter_label').value = state.content.intro_enter_label || '';
 }
 
@@ -129,7 +127,6 @@ function readContentForm() {
   state.content.intro_eyebrow = document.getElementById('f_intro_eyebrow').value;
   state.content.intro_title = document.getElementById('f_intro_title').value;
   state.content.intro_body = document.getElementById('f_intro_body').value;
-  state.content.intro_body_small = document.getElementById('f_intro_body_small').value;
   state.content.intro_enter_label = document.getElementById('f_intro_enter_label').value;
 }
 

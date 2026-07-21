@@ -136,7 +136,6 @@ function applySiteContent(content) {
   setText('heroHint', content.hero_hint);
   setText('introEyebrow', content.intro_eyebrow);
   setText('introBody', content.intro_body);
-  setText('introBodySmall', content.intro_body_small);
   setText('introEnterBtn', content.intro_enter_label);
 
   if (content.intro_title != null) {
