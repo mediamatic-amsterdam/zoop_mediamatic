@@ -186,10 +186,6 @@ body.rat .intro-ripple {
   max-width: 480px;
 }
 
-.intro-body--small {
-  font-size: 14px;
-  color: rgba(224,234,238,0.3);
-}
 
 .intro-enter {
   font-family: Georgia, serif;
