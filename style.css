@@ -66,15 +66,13 @@ body.rat {
 
 .intro-hero-wordmark {
   position: fixed;
-  top: 20%;
-  left: 0;
-  right: 70;
-  transform: translateY(-50%);
-  text-align: center;
+  top: 8vh;
+  left: 6vw;
+  text-align: left;
   font-family: Georgia, serif;
   font-style: italic;
   font-weight: normal;
-  font-size: clamp(4.77rem, 15.9vw, 13.78rem);
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
   color: rgba(255,255,255,0.92);
   letter-spacing: -0.02em;
   line-height: 1;
