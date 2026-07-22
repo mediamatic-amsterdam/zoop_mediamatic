@@ -21,5 +21,5 @@ Image/video content (not used in the logbook) is stored on GitHub
 
 ### Day to day
 
-Open `admin.html`, log in, edit the intro text or any goal/intervention field (add/remove interventions, reorder them, edit progress), click **Save all changes**. The public site (`index.html`) reads this content live from Supabase on every page load. 
+Open `https://mediamatic-amsterdam.github.io/zoop_mediamatic/admin`, log in, edit the intro text or any goal/intervention field (add/remove interventions, reorder them, edit progress), click **Save all changes**. The public site (`index.html`) reads this content live from Supabase on every page load. 
 
