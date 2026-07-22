@@ -385,6 +385,12 @@ body::before {
   opacity: 1;
   transform: scale(1.06);
 }
+.goal-icon-img {
+  display: block;
+  width: 2.76rem;
+  height: 2.76rem;
+  object-fit: contain;
+}
 
 .goal-num {
   font-size: 11px;
@@ -481,6 +487,12 @@ body::before {
   opacity: 0.75;
   user-select: none;
 }
+.detail-icon-img {
+  display: block;
+  width: 7.42rem;
+  height: 7.42rem;
+  object-fit: contain;
+}
 
 .detail-goal-label {
   font-size: 12px;
@@ -518,6 +530,12 @@ body::before {
   opacity: 1;
   background: #DE9A34;
   border-left-color: rgba(0,0,0,0.55);
+}
+.strip-icon-img {
+  display: block;
+  width: 1.43rem;
+  height: 1.43rem;
+  object-fit: contain;
 }
 
 /* Right column — info + interventions */
