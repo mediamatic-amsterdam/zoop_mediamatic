@@ -10,9 +10,7 @@
 const defaultGoals = [
   {
     number: "01",
-    // Replace emoji with a path to an SVG in assets/icons/ when ready:
-    // icon: "assets/icons/goal-01.svg"
-    icon: "🌿",
+    icon: "assets/icons/goal1.png",
     name: "Sensitize toward the more-than-human world",
     shortName: "Sensitize",
     desc: "Identification and inventory of all resident and transient more-than-human species within the biotope — building a foundation for long-term, careful stewardship of shared space.",
@@ -63,7 +61,7 @@ const defaultGoals = [
   },
   {
     number: "02",
-    icon: "♻️",
+    icon: "assets/icons/goal2.png",
     name: "Evolve all material lifecycles into life-supporting systems",
     shortName: "Material cycles",
     desc: "Transform every material we use into a regenerative resource — from restaurant organic waste to biotope fuel, building a closed-loop life-supporting system.",
@@ -94,7 +92,7 @@ const defaultGoals = [
   },
   {
     number: "03",
-    icon: "📡",
+    icon: "assets/icons/goal3.png",
     name: "Reduce dependence on extractive digital platforms",
     shortName: "Digital ecology",
     desc: "Reducing our digital footprint and gradually switching to regenerative alternatives — from Mastodon to lower energy consumption across all operations.",
@@ -124,7 +122,7 @@ const defaultGoals = [
   },
   {
     number: "04",
-    icon: "🤝",
+    icon: "assets/icons/goal4.png",
     name: "Cultivate mutualistic collaboration among human actors",
     shortName: "Mutualism",
     desc: "Ensuring all participants in our biotope adopt behaviors that directly support Zoöp objectives — through mandatory requirements, behavioral design, and incentives.",
@@ -153,7 +151,7 @@ const defaultGoals = [
   },
   {
     number: "05",
-    icon: "📢",
+    icon: "assets/icons/goal5.png",
     name: "Highlight more-than-human stakeholders in all communications",
     shortName: "Communication",
     desc: "Shifting our community's focus by integrating more-than-human stakeholders into all communications — from the website to Open Friday tours.",

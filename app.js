@@ -11,15 +11,23 @@ let activeIdx = 0;
 // not admin-editable — they stay a code/git change. Add an entry here when a
 // new goal is created in admin; until then it falls back to GOAL_ICON_FALLBACK.
 const GOAL_ICONS = {
-  "01": "🌿",
-  "02": "♻️",
-  "03": "📡",
-  "04": "🤝",
-  "05": "📢"
+  "01": "assets/icons/goal1.png",
+  "02": "assets/icons/goal2.png",
+  "03": "assets/icons/goal3.png",
+  "04": "assets/icons/goal4.png",
+  "05": "assets/icons/goal5.png"
 };
 const GOAL_ICON_FALLBACK = "•";
 function getGoalIcon(number) {
   return GOAL_ICONS[number] || GOAL_ICON_FALLBACK;
+}
+
+// Icons are either an image path (assets/icons/*.png) or a plain-text
+// fallback ("•"). Render accordingly so undefined goals still show a bullet.
+function renderGoalIcon(icon, cls) {
+  return /\.(png|jpe?g|svg|webp)$/i.test(icon)
+    ? `<img class="${cls}" src="${icon}" alt="">`
+    : icon;
 }
 
 let goals = defaultGoals;
@@ -184,7 +192,7 @@ function renderBrowse() {
       onmouseleave="hideHover()"
       onclick="openDetail(${i})">
       <div class="br"></div>
-      <div class="goal-icon">${g.icon}</div>
+      <div class="goal-icon">${renderGoalIcon(g.icon, 'goal-icon-img')}</div>
       <div class="goal-num">${g.number}</div>
     </div>
   `).join('');
@@ -206,7 +214,7 @@ function openDetail(idx) {
   activeIdx = idx;
   const g = goals[idx];
 
-  document.getElementById('detailIcon').textContent = g.icon;
+  document.getElementById('detailIcon').innerHTML = renderGoalIcon(g.icon, 'detail-icon-img');
   document.getElementById('detailGoalLabel').textContent = `goal ${g.number}`;
   document.getElementById('detailGoalNum').textContent = `goal ${g.number}`;
   document.getElementById('detailTitle').textContent = g.name;
@@ -217,7 +225,7 @@ function openDetail(idx) {
     <div class="strip-item ${si === idx ? 'active' : ''}"
       onclick="openDetail(${si})"
       title="${sg.shortName}">
-      ${sg.icon}
+      ${renderGoalIcon(sg.icon, 'strip-icon-img')}
     </div>
   `).join('');
 
