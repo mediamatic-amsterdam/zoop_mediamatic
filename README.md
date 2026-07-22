@@ -3,13 +3,14 @@
 An interactive website for all of our progress as a Zoop. 
 
 ## Structure
-
+'''
 ├── index.html        # layout
 ├── style.css         # all styles (where you can edit colors,fonts,images
 ├── app.js            # interaction logic
 ├── data.js           # all goals and interventions (for goals icons) 
 └── assets/
     └── icons/        # where assets live (like backgrounds, goal icons, 3D assets, etc)
+    '''
 
 ## Updating content
 
