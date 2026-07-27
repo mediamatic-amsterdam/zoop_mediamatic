@@ -255,18 +255,17 @@ body::before {
   backdrop-filter: blur(6px);
 }
 
-/* shared 3D model-viewer — position/size animate between hero and float states */
+/* shared title wordmark image — position/size animate between hero and float states */
 #titleModel {
   position: fixed;
   z-index: 120;
-  --poster-color: transparent;
-  background-color: transparent;
+  object-fit: contain;
   opacity: 1;
   transition: top 0.9s cubic-bezier(0.16,1,0.3,1), left 0.9s cubic-bezier(0.16,1,0.3,1),
               width 0.9s cubic-bezier(0.16,1,0.3,1), height 0.9s cubic-bezier(0.16,1,0.3,1);
 }
 
-/* step 1 — big, centered, rotating, clickable */
+/* step 1 — big, centered, clickable */
 .title-model-hero {
   top: calc(50vh - 23vw);
   left: calc(50vw - 23vw);
@@ -276,7 +275,7 @@ body::before {
   pointer-events: auto;
 }
 
-/* floating 3D wordmark — breaks out of the header, with clear padding from the edge */
+/* floating wordmark — breaks out of the header, with clear padding from the edge */
 .title-model-float {
   top: -3vw;
   left: 3vw;

@@ -39,26 +39,6 @@ function toggleTheme() {
   document.body.classList.toggle('rat', !isBird);
 }
 
-// ── TITLE MODEL (3D) ──
-
-function initTitleModel() {
-  const mv = document.getElementById('titleModel');
-  if (!mv) return;
-
-  const amplitude = 15; // degrees left/right of center
-  const periodMs = 6000; // one full left-center-right-center sweep
-  const start = performance.now();
-
-  function animate(now) {
-    const theta = amplitude * Math.sin((now - start) / periodMs * Math.PI * 2);
-    mv.cameraOrbit = `${theta}deg 75deg 105%`;
-    requestAnimationFrame(animate);
-  }
-  requestAnimationFrame(animate);
-}
-
-document.getElementById('titleModel')?.addEventListener('load', initTitleModel);
-
 // ── INTRO ──
 
 let introHeroDismissed = false;
