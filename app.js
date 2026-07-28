@@ -277,6 +277,8 @@ const windowOffsets = {
 };
 
 function openDeskWindow(id) {
+  if (id === 'ecoLexicon') { openEcoLexicon(); return; }
+
   const win = document.getElementById('win-' + id);
   if (win.classList.contains('open')) {
     bringToFront(win);
@@ -317,12 +319,330 @@ function bringToFront(win) {
   win.style.zIndex = windowZCounter;
 }
 
+// ── ECO-LEXICON WORD CLOUD ──
+
+// rough scatter, percentages within the panel — tweak freely
+// (kept clear of the 50/50 hub so nothing sits on top of it)
+// keyed by term id (not array order) so re-ordering ecoLexiconData never reshuffles the layout
+const ecoLexiconPositions = {
+  "anthroponic-system":        { x: 18, y: 22 },
+  "biomimicry":                { x: 40, y: 14 },
+  "biotope":                   { x: 63, y: 15 },
+  "chthulucene":                { x: 84, y: 24 },
+  "deep-ecology":               { x: 12, y: 48 },
+  "eco-emotions":               { x: 30, y: 68 },
+  "eco-sexuality":              { x: 50, y: 76 },
+  "eco-somatics":               { x: 71, y: 70 },
+  "ecocentrism":                 { x: 88, y: 50 },
+  "other-than-human-lifeform":  { x: 22, y: 84 },
+  "speaker-for-the-living":     { x: 78, y: 86 },
+  "zoonomic-institute":          { x: 50, y: 8 }
+};
+
+let ecoLexiconBuilt = false;
+let ecoExpandedItem = null;
+let ecoMouse = { x: -9999, y: -9999 };
+let ecoRafId = null;
+
+function buildEcoLexicon() {
+  if (ecoLexiconBuilt) return;
+  const cloud = document.getElementById('ecoLexiconCloud');
+
+  ecoLexiconData.forEach((term, i) => {
+    const pos = ecoLexiconPositions[term.id] || { x: 50, y: 50 };
+
+    const item = document.createElement('div');
+    item.className = 'wc-item';
+    item.style.left = pos.x + '%';
+    item.style.top = pos.y + '%';
+
+    const float = document.createElement('div');
+    float.className = 'wc-float';
+    float.style.setProperty('--dur', (6 + Math.random() * 4).toFixed(2) + 's');
+    float.style.setProperty('--delay', (Math.random() * 4).toFixed(2) + 's');
+    float.style.setProperty('--dx', (Math.random() * 26 - 13).toFixed(1) + 'px');
+    float.style.setProperty('--dy', (Math.random() * 26 - 13).toFixed(1) + 'px');
+
+    const scale = document.createElement('div');
+    scale.className = 'wc-scale';
+
+    const card = document.createElement('div');
+    card.className = 'wc-card';
+
+    const flip = document.createElement('div');
+    flip.className = 'wc-flip';
+
+    const front = document.createElement('div');
+    front.className = 'wc-face wc-front';
+    front.innerHTML = `<div class="wc-face-clip"><img src="${term.img}" alt="${term.label}"></div>`;
+
+    const back = document.createElement('div');
+    back.className = 'wc-face wc-back';
+    back.innerHTML = `
+      <div class="wc-face-clip">
+        <img src="${term.backImg}" alt="${term.label} — back">
+        <div class="wc-back-content">
+          <div class="wc-back-header">${term.label}</div>
+          <div class="wc-back-sub">${term.subtitle}</div>
+          <div class="wc-back-body">${term.body}</div>
+        </div>
+      </div>
+      <button class="wc-back-close" onclick="event.stopPropagation(); collapseEcoItem();">← back to word cloud</button>
+    `;
+
+    flip.appendChild(front);
+    flip.appendChild(back);
+    card.appendChild(flip);
+    scale.appendChild(card);
+    float.appendChild(scale);
+
+    const label = document.createElement('div');
+    label.className = 'wc-label';
+    label.textContent = term.label;
+    float.appendChild(label);
+
+    item.appendChild(float);
+    cloud.appendChild(item);
+
+    card.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleEcoItem(item);
+    });
+  });
+
+  ecoLexiconBuilt = true;
+}
+
+function toggleEcoItem(item) {
+  if (item.classList.contains('expanded')) {
+    collapseEcoItem();
+    return;
+  }
+  if (ecoExpandedItem) collapseEcoItem();
+
+  item.querySelector('.wc-scale').style.transform = 'scale(1)';
+  item.classList.add('expanded');
+  document.getElementById('ecoLexiconCloud').classList.add('eco-cloud--dimmed');
+  ecoExpandedItem = item;
+}
+
+function collapseEcoItem() {
+  if (!ecoExpandedItem) return;
+  ecoExpandedItem.classList.remove('expanded');
+  document.getElementById('ecoLexiconCloud').classList.remove('eco-cloud--dimmed');
+  ecoExpandedItem = null;
+}
+
+function openEcoLexicon() {
+  document.getElementById('ecoLexiconOverlay').classList.add('open');
+  buildEcoLexicon();
+  document.addEventListener('mousemove', trackEcoMouse);
+  if (!ecoRafId) ecoRafId = requestAnimationFrame(ecoLoop);
+}
+
+function closeEcoLexicon() {
+  collapseEcoItem();
+  closeEcoHuntResult();
+  document.getElementById('ecoLexiconPanel').classList.remove('hunt-mode');
+  updateEcoHuntBadge();
+  document.getElementById('ecoLexiconOverlay').classList.remove('open');
+  document.removeEventListener('mousemove', trackEcoMouse);
+  if (ecoRafId) { cancelAnimationFrame(ecoRafId); ecoRafId = null; }
+}
+
+function closeEcoLexiconOnBackdrop(e) {
+  if (e.target === e.currentTarget) closeEcoLexicon();
+}
+
+function trackEcoMouse(e) {
+  ecoMouse.x = e.clientX;
+  ecoMouse.y = e.clientY;
+}
+
+function ecoLoop() {
+  const cloud = document.getElementById('ecoLexiconCloud');
+  const hub = cloud.querySelector('.eco-hub');
+  const svg = document.getElementById('ecoLines');
+  const cloudRect = cloud.getBoundingClientRect();
+  const hubRect = hub.getBoundingClientRect();
+  const hubX = hubRect.left + hubRect.width / 2 - cloudRect.left;
+  const hubY = hubRect.top + hubRect.height / 2 - cloudRect.top;
+
+  let linesSVG = '';
+
+  cloud.querySelectorAll('.wc-item').forEach(item => {
+    if (item.classList.contains('expanded')) return;
+
+    const cardEl = item.querySelector('.wc-card');
+    const rect = cardEl.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const dist = Math.hypot(ecoMouse.x - cx, ecoMouse.y - cy);
+    const proximity = Math.max(0, 1 - dist / 220);
+    const scaleVal = 1 + proximity * 0.5;
+    item.querySelector('.wc-scale').style.transform = `scale(${scaleVal.toFixed(3)})`;
+
+    linesSVG += `<line x1="${hubX}" y1="${hubY}" x2="${cx - cloudRect.left}" y2="${cy - cloudRect.top}" />`;
+  });
+
+  svg.innerHTML = linesSVG;
+  ecoRafId = requestAnimationFrame(ecoLoop);
+}
+
+// ── ECO-LEXICON HUNT — drag-and-drop matching game ──
+
+let ecoHuntBuilt = false;
+let ecoHuntMatchedCount = 0;
+
+function shuffled(arr) {
+  const copy = arr.slice();
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function toggleEcoHuntView() {
+  const panel = document.getElementById('ecoLexiconPanel');
+  const enteringHunt = !panel.classList.contains('hunt-mode');
+  if (enteringHunt) collapseEcoItem();
+  panel.classList.toggle('hunt-mode', enteringHunt);
+  updateEcoHuntBadge();
+  if (enteringHunt) buildEcoHunt();
+}
+
+function updateEcoHuntBadge() {
+  const badge = document.getElementById('ecoHuntBadge');
+  const inHunt = document.getElementById('ecoLexiconPanel').classList.contains('hunt-mode');
+  badge.innerHTML = inHunt
+    ? `<span class="eco-hunt-badge-line">← word</span><span class="eco-hunt-badge-line">cloud</span>`
+    : `<span class="eco-hunt-badge-line">eco-lexicon</span><span class="eco-hunt-badge-line">hunt</span>`;
+}
+
+function buildEcoHunt() {
+  if (ecoHuntBuilt) return;
+  const slotsEl = document.getElementById('huntSlots');
+  const trayEl = document.getElementById('huntTray');
+
+  // slots stay in Eco-Lexicon #1→12 order (not shuffled) so the fully-solved
+  // board reads the hunt word correctly, left to right, top to bottom
+  ecoLexiconData.forEach(term => {
+    const slot = document.createElement('div');
+    slot.className = 'hunt-slot';
+    slot.dataset.id = term.id;
+    slot.innerHTML = `
+      <div class="hunt-slot-drop"><div class="hunt-slot-letter"></div></div>
+      <div class="hunt-slot-label">${term.label}</div>
+    `;
+    slotsEl.appendChild(slot);
+  });
+
+  shuffled(ecoLexiconData).forEach(term => {
+    const icon = document.createElement('div');
+    icon.className = 'hunt-tray-icon';
+    icon.dataset.id = term.id;
+    icon.innerHTML = `<img src="${term.img}" alt="${term.label}">`;
+    trayEl.appendChild(icon);
+  });
+
+  initHuntDrag();
+  ecoHuntBuilt = true;
+}
+
+function initHuntDrag() {
+  let dragEl = null, dragTermId = null, offsetX = 0, offsetY = 0;
+
+  function onPointerMove(e) {
+    if (!dragEl) return;
+    dragEl.style.left = (e.clientX - offsetX) + 'px';
+    dragEl.style.top = (e.clientY - offsetY) + 'px';
+
+    document.querySelectorAll('.hunt-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    const slot = target && target.closest('.hunt-slot');
+    if (slot && !slot.classList.contains('matched')) slot.classList.add('drag-over');
+  }
+
+  function onPointerUp(e) {
+    document.removeEventListener('pointermove', onPointerMove);
+    if (!dragEl) return;
+
+    document.querySelectorAll('.hunt-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    const slot = target && target.closest('.hunt-slot');
+
+    if (slot && !slot.classList.contains('matched') && slot.dataset.id === dragTermId) {
+      slot.classList.add('matched');
+      slot.querySelector('.hunt-slot-letter').textContent = ecoLexiconById[dragTermId].letter;
+      dragEl.remove();
+      ecoHuntMatchedCount++;
+    } else {
+      dragEl.classList.remove('dragging');
+      dragEl.style.position = '';
+      dragEl.style.left = '';
+      dragEl.style.top = '';
+      dragEl.style.zIndex = '';
+      if (slot) {
+        dragEl.classList.add('shake');
+        setTimeout(() => dragEl && dragEl.classList.remove('shake'), 400);
+      }
+    }
+    dragEl = null;
+  }
+
+  document.getElementById('huntTray').addEventListener('pointerdown', e => {
+    const icon = e.target.closest('.hunt-tray-icon');
+    if (!icon) return;
+    e.stopPropagation();
+
+    dragEl = icon;
+    dragTermId = icon.dataset.id;
+    icon.setPointerCapture(e.pointerId);
+
+    const rect = icon.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+
+    icon.classList.add('dragging');
+    icon.style.position = 'fixed';
+    icon.style.left = rect.left + 'px';
+    icon.style.top = rect.top + 'px';
+    icon.style.zIndex = 999;
+
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerup', onPointerUp, { once: true });
+  });
+}
+
+function submitEcoHunt() {
+  const result = document.getElementById('ecoHuntResult');
+  const title = document.getElementById('ecoHuntResultTitle');
+  const sub = document.getElementById('ecoHuntResultSub');
+
+  if (ecoHuntMatchedCount >= ecoLexiconData.length) {
+    title.textContent = 'CORRECT!';
+    sub.innerHTML = `eco-lexicon reward<span class="eco-hunt-phrase">${ECO_LEXICON_HUNT_WORD}</span>enter this phrase at <a class="eco-hunt-link" href="https://mediamatic.net" target="_blank" rel="noopener">mediamatic.net</a> to claim your reward.`;
+  } else {
+    title.textContent = 'TRY AGAIN!';
+    sub.textContent = `${ecoHuntMatchedCount} of ${ecoLexiconData.length} matched — keep dragging.`;
+  }
+  result.classList.add('open');
+}
+
+function closeEcoHuntResult(e) {
+  if (e) e.stopPropagation();
+  document.getElementById('ecoHuntResult').classList.remove('open');
+}
+
 // clicking the site background (not a window, folder, goal, or theme toggle) closes any open windows
 document.addEventListener('click', e => {
   if (e.target.closest('.desk-window')) return;
   if (e.target.closest('.desktop-folder')) return;
   if (e.target.closest('.goal-thumb')) return;
   if (e.target.closest('#themeAnimal')) return;
+  if (e.target.closest('#ecoLexiconOverlay')) return;
 
   document.querySelectorAll('.desk-window.open').forEach(win => {
     closeDeskWindow(win.id.replace('win-', ''));

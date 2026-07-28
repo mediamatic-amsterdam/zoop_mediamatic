@@ -58,6 +58,10 @@
       <div class="folder-icon"></div>
       <div class="folder-label">Logbook</div>
     </div>
+    <div class="desktop-folder" data-window="ecoLexicon" draggable="false">
+      <div class="folder-icon"></div>
+      <div class="folder-label">Eco-Lexicon</div>
+    </div>
   </div>
 
   <!-- BROWSE VIEW -->
@@ -244,6 +248,42 @@
           </div>
           <button type="submit" class="logbook-submit">Submit Entry</button>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Eco-Lexicon Overlay -->
+  <div id="ecoLexiconOverlay" onclick="closeEcoLexiconOnBackdrop(event)">
+    <div class="eco-lexicon-panel" id="ecoLexiconPanel">
+      <button class="eco-lexicon-close" onclick="closeEcoLexicon()" aria-label="close">✕</button>
+
+      <!-- WORD CLOUD VIEW -->
+      <div class="eco-lexicon-cloud" id="ecoLexiconCloud">
+        <div class="eco-hub">Eco-Lexicon</div>
+        <svg class="eco-lines" id="ecoLines"></svg>
+        <div class="eco-lexicon-hint">click each photo to reveal a zoöp keyword!</div>
+      </div>
+
+      <!-- HUNT VIEW (drag-and-drop matching game) -->
+      <div class="eco-hunt" id="ecoHunt">
+        <div class="eco-hunt-caption">drag the eco-lexicon to the matching keyword to reveal the secret zoöp phrase!</div>
+        <div class="eco-hunt-board">
+          <div class="hunt-slots" id="huntSlots"></div>
+          <div class="hunt-tray" id="huntTray"></div>
+        </div>
+        <button class="eco-hunt-submit" onclick="submitEcoHunt()">submit</button>
+      </div>
+
+      <!-- toggles between the word-cloud view and the hunt view -->
+      <button class="eco-hunt-badge" id="ecoHuntBadge" onclick="toggleEcoHuntView()">
+        <span class="eco-hunt-badge-line">eco-lexicon</span>
+        <span class="eco-hunt-badge-line">hunt</span>
+      </button>
+
+      <!-- HUNT RESULT (try again / correct) -->
+      <div class="eco-hunt-result" id="ecoHuntResult" onclick="closeEcoHuntResult()">
+        <div class="eco-hunt-result-title" id="ecoHuntResultTitle"></div>
+        <div class="eco-hunt-result-sub" id="ecoHuntResultSub"></div>
       </div>
     </div>
   </div>

@@ -1203,6 +1203,568 @@ body.rat .desktop-folder:hover .folder-label { color: rgba(224,234,238,0.7); }
   color: rgba(255,255,255,0.25);
 }
 
+/* ─────────────────────────────────────────
+   ECO-LEXICON — floating word cloud
+───────────────────────────────────────── */
+
+#ecoLexiconOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20,10,35,0.32);
+}
+
+#ecoLexiconOverlay.open {
+  display: flex;
+}
+
+.eco-lexicon-panel {
+  position: relative;
+  width: 80vw;
+  height: 80vh;
+  border-radius: 22px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(151,97,255,0.55) 0%, rgba(255,255,255,0.30) 50%, rgba(151,97,255,0.5) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 24px 70px rgba(40,10,80,0.4), inset 0 0 0 1px rgba(255,255,255,0.3);
+  animation: ecoPanelIn 0.35s cubic-bezier(.2,.8,.3,1);
+}
+
+@keyframes ecoPanelIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.eco-lexicon-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 40;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.eco-lexicon-close:hover {
+  background: rgba(255,255,255,0.32);
+}
+
+.eco-lexicon-cloud {
+  position: absolute;
+  inset: 0;
+}
+
+.eco-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  padding: 11px 24px;
+  border-radius: 30px;
+  background: rgba(255,255,255,0.55);
+  color: #4b2e83;
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 18px rgba(80,30,140,0.25);
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.eco-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.eco-lines line {
+  stroke: rgba(255,255,255,0.55);
+  stroke-width: 1;
+}
+
+.eco-lexicon-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(75,46,131,0.75);
+  text-shadow: 0 1px 2px rgba(255,255,255,0.4);
+  text-align: center;
+  max-width: 60%;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.eco-cloud--dimmed .eco-hub,
+.eco-cloud--dimmed .eco-lines,
+.eco-cloud--dimmed .eco-lexicon-hint {
+  opacity: 0;
+}
+
+.wc-item {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  transition: left 0.7s cubic-bezier(.4,0,.2,1), top 0.7s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+}
+
+.wc-item.expanded {
+  left: 50% !important;
+  top: 50% !important;
+  z-index: 30;
+}
+
+.eco-cloud--dimmed .wc-item:not(.expanded) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wc-float {
+  animation: wcFloat var(--dur, 7s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.wc-item.expanded .wc-float {
+  animation: none;
+}
+
+@keyframes wcFloat {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(var(--dx, 10px), var(--dy, -14px)); }
+}
+
+.wc-scale {
+  transition: transform 0.25s ease;
+}
+
+.wc-card {
+  position: relative;
+  width: 92px;
+  height: 106px;
+  perspective: 1000px;
+  cursor: pointer;
+  transition: width 0.9s cubic-bezier(.4,0,.2,1), height 0.9s cubic-bezier(.4,0,.2,1);
+}
+
+.wc-item.expanded .wc-card {
+  width: min(380px, 34vw);
+  height: min(440px, 58vh);
+  cursor: default;
+}
+
+.wc-flip {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: transform 0.9s cubic-bezier(.4,0,.2,1);
+}
+
+.wc-item.expanded .wc-flip {
+  transform: rotateY(180deg);
+}
+
+.wc-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.wc-face.wc-back {
+  transform: rotateY(180deg);
+}
+
+/* separate clip layer — keeping overflow/border-radius off the
+   backface-visibility element avoids a 3D-transform clipping bug
+   where the oval mask stops applying once the card is rotated */
+.wc-face-clip {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  clip-path: ellipse(50% 50% at 50% 50%);
+}
+
+.wc-face-clip img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wc-back .wc-face-clip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55) 100%);
+}
+
+.wc-label {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-style: italic;
+  color: #fff;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+.wc-item.expanded .wc-label {
+  display: none;
+}
+
+.wc-back-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16% 20%;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.35s;
+}
+
+.wc-item.expanded .wc-back-content {
+  opacity: 1;
+}
+
+.wc-back-header {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  margin-bottom: 2px;
+}
+
+.wc-back-sub {
+  font-size: 0.7rem;
+  opacity: 0.75;
+  margin-bottom: 10px;
+  letter-spacing: 0.03em;
+}
+
+.wc-back-body {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  overflow-y: auto;
+  max-height: 65%;
+}
+
+.wc-back-close {
+  position: absolute;
+  bottom: -38px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 12px;
+  white-space: nowrap;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(75,46,131,0.3);
+  color: #4b2e83;
+  padding: 5px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  opacity: 0;
+  transition: background 0.15s, opacity 0.3s ease 0.35s;
+}
+
+.wc-item.expanded .wc-back-close {
+  opacity: 1;
+}
+
+.wc-back-close:hover {
+  background: #fff;
+}
+
+/* ─────────────────────────────────────────
+   ECO-LEXICON HUNT — drag-and-drop matching game
+───────────────────────────────────────── */
+
+.eco-hunt {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  padding: 56px 40px 110px;
+}
+
+.eco-lexicon-panel.hunt-mode .eco-hunt {
+  display: flex;
+}
+
+.eco-lexicon-panel.hunt-mode .eco-lexicon-cloud {
+  display: none;
+}
+
+.eco-hunt-caption {
+  font-size: 14px;
+  font-style: italic;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  text-align: center;
+  max-width: 70%;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.eco-hunt-board {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  gap: 24px;
+  min-height: 0;
+}
+
+.hunt-slots {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 10px 22px;
+  overflow-y: auto;
+}
+
+.hunt-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 130px;
+  padding: 10px 6px;
+}
+
+/* the actual drop target — big and clearly bounded, roughly tray-icon sized
+   plus margin, so it's easy to aim for while dragging */
+.hunt-slot-drop {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255,255,255,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.hunt-slot.drag-over .hunt-slot-drop {
+  border-color: #fff;
+  background: rgba(255,255,255,0.18);
+  box-shadow: 0 0 14px rgba(255,255,255,0.7);
+}
+
+.hunt-slot.matched .hunt-slot-drop {
+  border-style: solid;
+  border-color: rgba(75,46,131,0.5);
+  background: rgba(255,255,255,0.3);
+}
+
+.hunt-slot-letter {
+  font-family: Georgia, serif;
+  font-weight: bold;
+  font-size: 1.7rem;
+  color: #4b2e83;
+  text-shadow: 0 1px 4px rgba(255,255,255,0.5);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+
+.hunt-slot.matched .hunt-slot-letter {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.hunt-slot-label {
+  margin-top: 8px;
+  font-size: 11px;
+  font-style: italic;
+  color: #fff;
+  text-align: center;
+  line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.hunt-tray {
+  width: 116px;
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 14px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.hunt-tray-icon {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+.hunt-tray-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.hunt-tray-icon.dragging {
+  cursor: grabbing;
+  transform: scale(1.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  /* let elementFromPoint hit-test the slot underneath instead of this icon */
+  pointer-events: none;
+}
+
+.hunt-tray-icon.shake {
+  animation: huntShake 0.4s;
+}
+
+@keyframes huntShake {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.eco-hunt-submit {
+  flex-shrink: 0;
+  margin-top: 20px;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(75,46,131,0.3);
+  color: #4b2e83;
+  padding: 8px 28px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.eco-hunt-submit:hover {
+  background: #fff;
+}
+
+.eco-hunt-badge {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: none;
+  background: radial-gradient(circle, #8b6fd6 0%, #5b3ea8 100%);
+  box-shadow: 0 4px 16px rgba(60,20,120,0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.eco-hunt-badge:hover {
+  transform: scale(1.06);
+}
+
+.eco-hunt-badge-line {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 10px;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.eco-hunt-result {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 0 15%;
+  background: radial-gradient(circle, rgba(120,90,210,0.6) 0%, rgba(90,60,170,0.75) 100%);
+  cursor: pointer;
+}
+
+.eco-hunt-result.open {
+  display: flex;
+}
+
+.eco-hunt-result-title {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 2rem;
+  color: #fff;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.eco-hunt-result-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.7;
+}
+
+.eco-hunt-phrase {
+  display: block;
+  margin: 6px 0;
+  font-family: Georgia, serif;
+  font-weight: bold;
+  font-size: 1.7rem;
+  letter-spacing: 0.14em;
+  color: #fff;
+}
+
+.eco-hunt-link {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.eco-hunt-link:hover {
+  color: #f0e8ff;
+}
+
 /* ── LOGBOOK ── */
 
 .logbook-layout {
