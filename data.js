@@ -193,7 +193,7 @@ const ecoLexiconData = [
     label: "Biomimicry",
     img: "assets/eco-lexicon/biomimicry.png",
     backImg: "assets/eco-lexicon/biomimicry-back.png",
-    body: "The practice of innovating by imitating nature’s powerful models. So using nature as an inspiration to solve human problems. Since evolution forces natural elements to be highly effective and efficient, there is a lot to learn from nature. Adapting nature’s strategies has already led to innovation and improvements in materials, aerodynamics, architecture and human health care."
+    body: "The practice of innovating by imitating nature’s powerful models. So using nature as an inspiration to solve human problems. Since evolution forces natural elements to be highly effective and efficient, there is a lot to learn from nature. Adapting nature’s strategies has already led to innovation and improvements in materials, aerodynamics, architecture and human health care. A fascinating example of biomimicry can be seen in the Tokyo railway system. Researchers arranged oat flakes in the pattern of Japanese cities and presented them to a slime mold (Physarum polycephalum)"
   },
   {
     id: "eco-somatics",
