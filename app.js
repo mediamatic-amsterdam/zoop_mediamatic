@@ -442,7 +442,6 @@ function openEcoLexicon() {
 
 function closeEcoLexicon() {
   collapseEcoItem();
-  closeEcoHuntResult();
   document.getElementById('ecoLexiconPanel').classList.remove('hunt-mode');
   updateEcoHuntBadge();
   document.getElementById('ecoLexiconOverlay').classList.remove('open');
@@ -490,19 +489,7 @@ function ecoLoop() {
   ecoRafId = requestAnimationFrame(ecoLoop);
 }
 
-// ── ECO-LEXICON HUNT — drag-and-drop matching game ──
-
-let ecoHuntBuilt = false;
-let ecoHuntMatchedCount = 0;
-
-function shuffled(arr) {
-  const copy = arr.slice();
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
+// ── ECO-LEXICON HUNT — real-world scavenger hunt map ──
 
 function toggleEcoHuntView() {
   const panel = document.getElementById('ecoLexiconPanel');
@@ -510,7 +497,6 @@ function toggleEcoHuntView() {
   if (enteringHunt) collapseEcoItem();
   panel.classList.toggle('hunt-mode', enteringHunt);
   updateEcoHuntBadge();
-  if (enteringHunt) buildEcoHunt();
 }
 
 function updateEcoHuntBadge() {
@@ -519,121 +505,6 @@ function updateEcoHuntBadge() {
   badge.innerHTML = inHunt
     ? `<span class="eco-hunt-badge-line">← word</span><span class="eco-hunt-badge-line">cloud</span>`
     : `<span class="eco-hunt-badge-line">eco-lexicon</span><span class="eco-hunt-badge-line">hunt</span>`;
-}
-
-function buildEcoHunt() {
-  if (ecoHuntBuilt) return;
-  const slotsEl = document.getElementById('huntSlots');
-  const trayEl = document.getElementById('huntTray');
-
-  // slots stay in Eco-Lexicon #1→12 order (not shuffled) so the fully-solved
-  // board reads the hunt word correctly, left to right, top to bottom
-  ecoLexiconData.forEach(term => {
-    const slot = document.createElement('div');
-    slot.className = 'hunt-slot';
-    slot.dataset.id = term.id;
-    slot.innerHTML = `
-      <div class="hunt-slot-drop"><div class="hunt-slot-letter"></div></div>
-      <div class="hunt-slot-label">${term.label}</div>
-    `;
-    slotsEl.appendChild(slot);
-  });
-
-  shuffled(ecoLexiconData).forEach(term => {
-    const icon = document.createElement('div');
-    icon.className = 'hunt-tray-icon';
-    icon.dataset.id = term.id;
-    icon.innerHTML = `<img src="${term.img}" alt="${term.label}">`;
-    trayEl.appendChild(icon);
-  });
-
-  initHuntDrag();
-  ecoHuntBuilt = true;
-}
-
-function initHuntDrag() {
-  let dragEl = null, dragTermId = null, offsetX = 0, offsetY = 0;
-
-  function onPointerMove(e) {
-    if (!dragEl) return;
-    dragEl.style.left = (e.clientX - offsetX) + 'px';
-    dragEl.style.top = (e.clientY - offsetY) + 'px';
-
-    document.querySelectorAll('.hunt-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
-    const target = document.elementFromPoint(e.clientX, e.clientY);
-    const slot = target && target.closest('.hunt-slot');
-    if (slot && !slot.classList.contains('matched')) slot.classList.add('drag-over');
-  }
-
-  function onPointerUp(e) {
-    document.removeEventListener('pointermove', onPointerMove);
-    if (!dragEl) return;
-
-    document.querySelectorAll('.hunt-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
-    const target = document.elementFromPoint(e.clientX, e.clientY);
-    const slot = target && target.closest('.hunt-slot');
-
-    if (slot && !slot.classList.contains('matched') && slot.dataset.id === dragTermId) {
-      slot.classList.add('matched');
-      slot.querySelector('.hunt-slot-letter').textContent = ecoLexiconById[dragTermId].letter;
-      dragEl.remove();
-      ecoHuntMatchedCount++;
-    } else {
-      dragEl.classList.remove('dragging');
-      dragEl.style.position = '';
-      dragEl.style.left = '';
-      dragEl.style.top = '';
-      dragEl.style.zIndex = '';
-      if (slot) {
-        dragEl.classList.add('shake');
-        setTimeout(() => dragEl && dragEl.classList.remove('shake'), 400);
-      }
-    }
-    dragEl = null;
-  }
-
-  document.getElementById('huntTray').addEventListener('pointerdown', e => {
-    const icon = e.target.closest('.hunt-tray-icon');
-    if (!icon) return;
-    e.stopPropagation();
-
-    dragEl = icon;
-    dragTermId = icon.dataset.id;
-    icon.setPointerCapture(e.pointerId);
-
-    const rect = icon.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-
-    icon.classList.add('dragging');
-    icon.style.position = 'fixed';
-    icon.style.left = rect.left + 'px';
-    icon.style.top = rect.top + 'px';
-    icon.style.zIndex = 999;
-
-    document.addEventListener('pointermove', onPointerMove);
-    document.addEventListener('pointerup', onPointerUp, { once: true });
-  });
-}
-
-function submitEcoHunt() {
-  const result = document.getElementById('ecoHuntResult');
-  const title = document.getElementById('ecoHuntResultTitle');
-  const sub = document.getElementById('ecoHuntResultSub');
-
-  if (ecoHuntMatchedCount >= ecoLexiconData.length) {
-    title.textContent = 'CORRECT!';
-    sub.innerHTML = `eco-lexicon reward<span class="eco-hunt-phrase">${ECO_LEXICON_HUNT_WORD}</span>enter this phrase at <a class="eco-hunt-link" href="https://mediamatic.net" target="_blank" rel="noopener">mediamatic.net</a> to claim your reward.`;
-  } else {
-    title.textContent = 'TRY AGAIN!';
-    sub.textContent = `${ecoHuntMatchedCount} of ${ecoLexiconData.length} matched — keep dragging.`;
-  }
-  result.classList.add('open');
-}
-
-function closeEcoHuntResult(e) {
-  if (e) e.stopPropagation();
-  document.getElementById('ecoHuntResult').classList.remove('open');
 }
 
 // clicking the site background (not a window, folder, goal, or theme toggle) closes any open windows

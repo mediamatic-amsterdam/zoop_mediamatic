@@ -264,14 +264,13 @@
         <div class="eco-lexicon-hint">click each photo to reveal a zoöp keyword!</div>
       </div>
 
-      <!-- HUNT VIEW (drag-and-drop matching game) -->
+      <!-- HUNT VIEW (real-world scavenger hunt map) -->
       <div class="eco-hunt" id="ecoHunt">
-        <div class="eco-hunt-caption">drag the eco-lexicon to the matching keyword to reveal the secret zoöp phrase!</div>
-        <div class="eco-hunt-board">
-          <div class="hunt-slots" id="huntSlots"></div>
-          <div class="hunt-tray" id="huntTray"></div>
+        <div class="eco-hunt-title">Mediamatic's Eco-Lexicon Hunt</div>
+        <div class="eco-hunt-caption">Around our Biotope we have placed these Zoöp keywords, see if you can collect all 12 and reveal the secret code to enter on the <a class="eco-hunt-link" href="https://mediamatic.net" target="_blank" rel="noopener">Mediamatic website</a>!</div>
+        <div class="eco-hunt-map">
+          <img src="assets/eco-lexicon/ecolexiconmap.png" alt="Map of the Mediamatic biotope showing where the eco-lexicon plates are hidden">
         </div>
-        <button class="eco-hunt-submit" onclick="submitEcoHunt()">submit</button>
       </div>
 
       <!-- toggles between the word-cloud view and the hunt view -->
@@ -279,12 +278,6 @@
         <span class="eco-hunt-badge-line">eco-lexicon</span>
         <span class="eco-hunt-badge-line">hunt</span>
       </button>
-
-      <!-- HUNT RESULT (try again / correct) -->
-      <div class="eco-hunt-result" id="ecoHuntResult" onclick="closeEcoHuntResult()">
-        <div class="eco-hunt-result-title" id="ecoHuntResultTitle"></div>
-        <div class="eco-hunt-result-sub" id="ecoHuntResultSub"></div>
-      </div>
     </div>
   </div>
 

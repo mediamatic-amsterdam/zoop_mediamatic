@@ -273,14 +273,3 @@ const ecoLexiconData = [
     body: "Any type of organism that is not a homo sapien. So all the living things, us humans, share the planet with. So from the biggest mammals to the smallest archaea. As a Zoöp, mediamatic gives the other-than-human life forms surrounding us a voice in decision making.", 
   }
 ].map((term, i) => ({ ...term, subtitle: `Eco-Lexicon #${i + 1}` }));
-
-// Hunt letters, one per term, in Eco-Lexicon #1→#12 order — collected by
-// correctly matching every term in the Eco-Lexicon Hunt mini-game.
-// Placeholder spells "HYDROCOMMONS" — swap freely, just keep 12 letters.
-const ECO_LEXICON_HUNT_WORD = "HYDROCOMMONS";
-ecoLexiconData.forEach((term, i) => {
-  term.letter = ECO_LEXICON_HUNT_WORD[i] || "?";
-});
-
-const ecoLexiconById = {};
-ecoLexiconData.forEach(term => { ecoLexiconById[term.id] = term; });
