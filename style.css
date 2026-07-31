@@ -973,6 +973,39 @@ body.rat .desktop-folder:hover .folder-label { color: rgba(224,234,238,0.7); }
   width: 620px;
 }
 
+.desk-window.maximized {
+  max-height: none;
+}
+
+.desk-window-resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  z-index: 20;
+}
+
+.desk-window-resize-handle::before {
+  content: '';
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(122,82,37,0.45);
+  border-bottom: 2px solid rgba(122,82,37,0.45);
+}
+
+.desk-window-resize-handle:hover::before {
+  border-color: rgba(64,44,15,0.8);
+}
+
+.desk-window.maximized .desk-window-resize-handle {
+  display: none;
+}
+
 .desk-window-titlebar {
   display: flex;
   align-items: center;
@@ -2128,6 +2161,7 @@ body.rat .desktop-folder:hover .folder-label { color: rgba(224,234,238,0.7); }
   background: #FFFDF5;
   cursor: crosshair;
   display: block;
+  touch-action: none;
 }
 
 /* Form inside create view */
@@ -2306,3 +2340,82 @@ body.rat .logbook-entry-meta { color: rgba(166,192,206,0.5); }
 body.rat .logbook-entry-observations { color: rgba(224,234,238,0.65); }
 body.rat .logbook-entry-text { color: rgba(224,234,238,0.4); }
 body.rat .logbook-empty { color: rgba(178,174,156,0.3); }
+
+/* ─────────────────────────────────────────
+   MOBILE — phones (portrait or landscape).
+   Desktop layout above is untouched; everything
+   here only kicks in below the breakpoint.
+───────────────────────────────────────── */
+@media (max-width: 900px) {
+
+  /* windows become full-screen panels — no drag/resize on touch */
+  .desk-window.open {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    border-width: 0;
+    box-shadow: none;
+  }
+
+  .desk-window-resize-handle { display: none; }
+  #win-logbook .win-dot--min { display: none; }
+
+  .desk-window-titlebar { cursor: default; }
+  .desk-window-titlebar:active { cursor: default; }
+
+  /* browse grid — fewer, larger-relative columns so it fits without horizontal scroll */
+  .goals-grid {
+    grid-template-columns: repeat(3, minmax(0, 88px));
+    gap: 2px;
+  }
+  .goal-thumb { width: 88px; height: 88px; }
+  .goal-icon, .goal-icon-img { font-size: 2.1rem; width: 2.1rem; height: 2.1rem; }
+
+  #desktopFolders {
+    top: 64px;
+    right: 8px;
+    gap: 8px;
+  }
+  .desktop-folder { width: 84px; padding: 8px 4px 6px; }
+  .folder-icon { width: 52px; height: 46px; }
+  .folder-label { font-size: 10.5px; max-width: 78px; }
+
+  .site-header { padding: 0.7rem 1rem; }
+  .site-meta { font-size: 11px; }
+
+  /* logbook — stack the feed full-width, trim the timeline rail */
+  .logbook-timeline { width: 64px; }
+  .timeline-item, .timeline-header { font-size: 10px; }
+
+  .logbook-new-btn { width: 60px; height: 60px; }
+
+  .logbook-field-row { flex-wrap: wrap; }
+  .logbook-field-row .logbook-field { flex: 1 1 45%; }
+
+  .draw-toolbar { row-gap: 6px; }
+
+  /* annual report book — shrink the spread so both pages fit the screen width */
+  .book-page { width: 38vw; }
+  .book-spread { padding: 5px; gap: 1px; }
+  .book-nav { width: 30px; height: 30px; font-size: 18px; }
+
+  /* eco-lexicon overlay — near full-screen, roomier hunt map */
+  .eco-lexicon-panel {
+    width: 96vw;
+    height: 92vh;
+    height: 92dvh;
+    border-radius: 14px;
+  }
+  .eco-hunt { padding: 20px 14px 16px; }
+  .eco-hunt-title { font-size: 1.25rem; }
+  .eco-hunt-caption { max-width: 100%; margin: 8px 0 16px; font-size: 13px; }
+  .eco-hunt-badge { width: 60px; height: 60px; bottom: 12px; right: 12px; }
+
+  .wc-card { width: 68px; height: 78px; }
+  .wc-item.expanded .wc-card { width: min(320px, 82vw); height: min(400px, 62vh); }
+  .eco-hub { font-size: 12px; padding: 8px 16px; }
+}

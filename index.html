@@ -130,7 +130,7 @@
     <div class="desk-window-titlebar" data-win="win-logbook">
       <div class="win-dots">
         <span class="win-dot win-dot--close" onclick="closeDeskWindow('logbook')"></span>
-        <span class="win-dot win-dot--min"></span>
+        <span class="win-dot win-dot--min" onclick="toggleMaximize('logbook')" title="maximize / restore"></span>
         <span class="win-dot win-dot--max"></span>
       </div>
       <span class="desk-window-title" id="logbookWindowTitle">Zoöp Logbook</span>
@@ -250,6 +250,8 @@
         </form>
       </div>
     </div>
+
+    <div class="desk-window-resize-handle" data-resize-win="win-logbook" title="drag to resize"></div>
   </div>
 
   <!-- Eco-Lexicon Overlay -->

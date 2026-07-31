@@ -308,6 +308,7 @@ function openDeskWindow(id) {
 function closeDeskWindow(id) {
   const win = document.getElementById('win-' + id);
   win.classList.remove('open');
+  if (win.classList.contains('maximized')) restoreWindow(win, id);
 
   if (id === 'wildlifeCams') {
     document.getElementById('videoEmbed').innerHTML = '<p class="video-hint">Loading playlist…</p>';
@@ -538,6 +539,7 @@ document.querySelectorAll('.desktop-folder').forEach(folder => {
 
     const winId = titlebar.dataset.win;
     dragWin = document.getElementById(winId);
+    if (dragWin.classList.contains('maximized')) { dragWin = null; return; }
     bringToFront(dragWin);
 
     const rect = dragWin.getBoundingClientRect();
@@ -557,6 +559,95 @@ document.querySelectorAll('.desktop-folder').forEach(folder => {
 
   document.addEventListener('mouseup', () => { dragWin = null; });
 })();
+
+// ── WINDOW RESIZING (corner drag handle) ──
+
+(function initWindowResize() {
+  const MIN_WIDTH = 380;
+  const MIN_HEIGHT = 280;
+  let resizeWin = null, startX, startY, startWidth, startHeight;
+
+  document.addEventListener('mousedown', e => {
+    const handle = e.target.closest('.desk-window-resize-handle');
+    if (!handle) return;
+
+    resizeWin = document.getElementById(handle.dataset.resizeWin);
+    if (!resizeWin || resizeWin.classList.contains('maximized')) { resizeWin = null; return; }
+
+    bringToFront(resizeWin);
+    const rect = resizeWin.getBoundingClientRect();
+    startX = e.clientX;
+    startY = e.clientY;
+    startWidth = rect.width;
+    startHeight = rect.height;
+
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!resizeWin) return;
+    const maxWidth = window.innerWidth - resizeWin.getBoundingClientRect().left - 12;
+    const maxHeight = window.innerHeight - resizeWin.getBoundingClientRect().top - 12;
+
+    const newWidth = Math.min(maxWidth, Math.max(MIN_WIDTH, startWidth + (e.clientX - startX)));
+    const newHeight = Math.min(maxHeight, Math.max(MIN_HEIGHT, startHeight + (e.clientY - startY)));
+
+    resizeWin.style.width = newWidth + 'px';
+    resizeWin.style.height = newHeight + 'px';
+    resizeWin.style.maxHeight = newHeight + 'px';
+  });
+
+  document.addEventListener('mouseup', () => { resizeWin = null; });
+})();
+
+// ── WINDOW MAXIMIZE / RESTORE (yellow titlebar dot) ──
+
+const windowPreMaximizeState = {};
+
+function toggleMaximize(id) {
+  const win = document.getElementById('win-' + id);
+  if (!win) return;
+
+  if (win.classList.contains('maximized')) {
+    restoreWindow(win, id);
+  } else {
+    windowPreMaximizeState[id] = {
+      top: win.style.top, left: win.style.left,
+      width: win.style.width, height: win.style.height,
+      maxHeight: win.style.maxHeight
+    };
+
+    win.style.top = '4vh';
+    win.style.left = '4vw';
+    win.style.width = '92vw';
+    win.style.height = '92vh';
+    win.style.maxHeight = '92vh';
+    win.classList.add('maximized');
+    bringToFront(win);
+  }
+}
+
+function restoreWindow(win, id) {
+  const prev = windowPreMaximizeState[id];
+  win.classList.remove('maximized');
+  if (prev) {
+    win.style.top = prev.top;
+    win.style.left = prev.left;
+    win.style.width = prev.width;
+    win.style.height = prev.height;
+    win.style.maxHeight = prev.maxHeight;
+    delete windowPreMaximizeState[id];
+  }
+}
+
+// Escape always gets you out of a maximized window
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('.desk-window.maximized').forEach(win => {
+    restoreWindow(win, win.id.replace('win-', ''));
+  });
+});
 
 // ── FOLDER ICON DRAGGING ──
 
@@ -924,32 +1015,46 @@ function initDrawCanvas() {
     `<div class="draw-color ${i === 0 ? 'active' : ''}" style="background:${c}" onclick="setDrawColor('${c}',this)"></div>`
   ).join('');
 
-  canvas.onmousedown = e => {
-    isDrawing = true;
+  const pointFromEvent = e => {
+    const src = e.touches && e.touches.length ? e.touches[0] : e;
     const r = canvas.getBoundingClientRect();
     const sx = canvas.width / r.width;
     const sy = canvas.height / r.height;
-    drawCtx.beginPath();
-    drawCtx.moveTo((e.clientX - r.left) * sx, (e.clientY - r.top) * sy);
+    return { x: (src.clientX - r.left) * sx, y: (src.clientY - r.top) * sy };
   };
-  canvas.onmousemove = e => {
+
+  const startDraw = e => {
+    isDrawing = true;
+    const p = pointFromEvent(e);
+    drawCtx.beginPath();
+    drawCtx.moveTo(p.x, p.y);
+  };
+  const moveDraw = e => {
     if (!isDrawing) return;
-    const r = canvas.getBoundingClientRect();
-    const sx = canvas.width / r.width;
-    const sy = canvas.height / r.height;
+    if (e.cancelable) e.preventDefault();
+    const p = pointFromEvent(e);
     drawCtx.lineWidth = drawSize;
     drawCtx.lineCap = 'round';
     drawCtx.lineJoin = 'round';
     drawCtx.strokeStyle = isEraser ? '#FFFDF5' : drawColor;
-    drawCtx.lineTo((e.clientX - r.left) * sx, (e.clientY - r.top) * sy);
+    drawCtx.lineTo(p.x, p.y);
     drawCtx.stroke();
   };
-  canvas.onmouseup = canvas.onmouseleave = () => {
+  const endDraw = () => {
     if (isDrawing) {
       isDrawing = false;
       drawHistory.push(drawCtx.getImageData(0, 0, canvas.width, canvas.height));
     }
   };
+
+  canvas.onmousedown = startDraw;
+  canvas.onmousemove = moveDraw;
+  canvas.onmouseup = canvas.onmouseleave = endDraw;
+
+  canvas.addEventListener('touchstart', startDraw, { passive: true });
+  canvas.addEventListener('touchmove', moveDraw, { passive: false });
+  canvas.addEventListener('touchend', endDraw);
+  canvas.addEventListener('touchcancel', endDraw);
 }
 
 function setDrawColor(c, el) {
